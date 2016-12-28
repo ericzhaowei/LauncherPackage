@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LauncherPackage</string>
+    <string name="shortcut_default_title">添加</string>
+    <string name="app_select_title">请选择要添加的应用</string>
+    <string name="shortcut_edit_replace">替换</string>
+    <string name="shortcut_edit_delete">删除</string>
+</resources>

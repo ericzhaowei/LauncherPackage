@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.ider.launcherpackage.launcher.MainActivity"
+    android:background="@mipmap/wallpaper">
+
+
+
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="63dp"
+        android:layout_width="281dp"
+        android:layout_height="436dp"
+        android:focusable="true"
+        android:tag="10"/>
+
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="350dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="11"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="571dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="12"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="792dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="13"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="1014dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="14"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="350dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="15"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="571dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="16"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="792dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="17"/>
+    <com.ider.launcherpackage.views.ShortcutView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="1014dp"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:focusable="true"
+        android:tag="18"/>
+
+</RelativeLayout>
