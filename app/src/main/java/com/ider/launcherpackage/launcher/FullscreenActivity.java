@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,7 +15,7 @@ import android.view.WindowManager;
 /**
  * Created by ider-eric on 2016/7/4.
  */
-public class FullscreenActivity extends FragmentActivity {
+public class FullscreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

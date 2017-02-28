@@ -3,19 +3,30 @@ package com.ider.launcherpackage.views;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewOutlineProvider;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.ider.launcherpackage.R;
 import com.ider.launcherpackage.common.BitmapTools;
+import com.ider.launcherpackage.common.EntryAnimation;
+import com.ider.launcherpackage.launcher.MainActivity;
 
 
-public abstract class BaseEntryView extends ImageView implements View.OnClickListener, View.OnLongClickListener{
+public abstract class BaseEntryView extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener{
 
+    private static final String TAG = "BaseEntryView";
+    
     public BitmapTools mBitmapTools;
     public Context mContext;
+    private ObjectAnimator animator = null;
 
     public BaseEntryView(Context context) {
         this(context, null);
@@ -29,37 +40,38 @@ public abstract class BaseEntryView extends ImageView implements View.OnClickLis
         mBitmapTools = BitmapTools.getInstance();
     }
 
+    // 第一次进入程序时调用
     public abstract void setDefault();
 
-    public abstract void setBitmap();
-
+    // 非第一次进入程序时调用，与setDefault只能调用其中给一个
     public abstract void updateSelf();
 
     public abstract void onClick();
 
     public abstract void onLongClick();
 
-
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        updateSelf();
+        if (MainActivity.isFirstIn(getContext())) {
+            setDefault();
+        } else {
+            updateSelf();
+        }
     }
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-        ObjectAnimator animator;
+
         if(gainFocus) {
-            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1f, 1.1f);
-            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1f, 1.1f);
-            animator = ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY);
-            animator.setDuration(250);
-            bringToFront();
+            animator = EntryAnimation.createFocusAnimator(this);
         } else {
-            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.1f, 1f);
-            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.1f, 1f);
-            animator = ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY);
-            animator.setDuration(100);
+
+            if(animator != null && animator.isRunning()) {
+                animator.cancel();
+            }
+            animator = EntryAnimation.createLoseFocusAnimator(this);
+
         }
         animator.start();
     }
@@ -74,4 +86,6 @@ public abstract class BaseEntryView extends ImageView implements View.OnClickLis
         onLongClick();
         return true;
     }
+
+
 }

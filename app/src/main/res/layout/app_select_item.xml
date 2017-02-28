@@ -18,6 +18,8 @@
         android:gravity="center"
         android:textSize="15sp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:maxLines="1"
+        android:ellipsize="marquee"/>
 
 </LinearLayout>

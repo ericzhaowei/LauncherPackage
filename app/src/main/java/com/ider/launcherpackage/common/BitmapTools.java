@@ -6,13 +6,19 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ider.launcherpackage.R;
+import com.ider.launcherpackage.launcher.ItemEntry;
+import com.ider.launcherpackage.launcher.PackageHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BitmapTools {
 
@@ -34,51 +40,36 @@ public class BitmapTools {
         return bitmapDrawable.getBitmap();
     }
 
+    public Bitmap getFolderThumbnailBitmap(Context mContext, List<PackageHolder> packages, int width, int height) {
+        // 创建一个grid视图
+        View view = View.inflate(mContext, R.layout.folder_thumbnail_grid, null);
+        view.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        view.layout(0, 0, width, height);
 
-    public Bitmap getDefaultShortcutBitmap(Context mContext,
-                                           int layoutId,
-                                           int itemWidth,
-                                           int itemHeight,
-                                           int backgroundDrawable) {
+        GridLayout gridLayout = (GridLayout) view;
+        setupThumbnailGrid(gridLayout, packages);
 
-        View root = View.inflate(mContext, layoutId, null);
-        root.measure(MeasureSpec.makeMeasureSpec(itemWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(itemHeight, MeasureSpec.EXACTLY));
-        root.layout(0, 0, root.getMeasuredWidth(), root.getMeasuredHeight());
-        root.setBackgroundResource(backgroundDrawable);
-
-        Bitmap bitmap = Bitmap.createBitmap(itemWidth, itemHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.save();
-        root.draw(canvas);
-        canvas.restore();
+        view.draw(canvas);
         return bitmap;
-
     }
 
 
-    public Bitmap getShortcutBitmap(Context context,
-                                    int layoutId,
-                                    int imageId,
-                                    int textId,
-                                    Drawable imageDrawable,
-                                    String title,
-                                    int itemWidth,
-                                    int itemHeight,
-                                    int backgroundDrawable) {
-        View view = View.inflate(context, layoutId, null);
-        view.measure(MeasureSpec.makeMeasureSpec(itemWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(itemHeight, MeasureSpec.EXACTLY));
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-        ImageView image = (ImageView) view.findViewById(imageId);
-        TextView text = (TextView) view.findViewById(textId);
-        image.setImageDrawable(imageDrawable);
-        text.setText(title);
-        view.setBackgroundResource(backgroundDrawable);
-        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.save();
-        view.draw(canvas);
-        canvas.restore();
-        return bitmap;
+    private void setupThumbnailGrid(GridLayout gridLayout, List<PackageHolder> list) {
+        if(list.size() > 9) {
+            list = list.subList(0, 9);
+        }
+        for(int i = 0; i < list.size(); i++) {
+            Drawable drawable;
+            if (list.get(i).getPackageName().equals("add")) {
+                drawable = gridLayout.getContext().getResources().getDrawable(R.mipmap.add_item_white);
+            } else {
+                drawable = ItemEntry.loadImage(gridLayout.getContext(), list.get(i).getPackageName());
+            }
+            ((ImageView) gridLayout.getChildAt(i)).setImageDrawable(drawable);
+        }
+
 
     }
 

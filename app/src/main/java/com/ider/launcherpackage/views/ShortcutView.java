@@ -3,8 +3,11 @@ package com.ider.launcherpackage.views;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Outline;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,10 +24,10 @@ public class ShortcutView extends BaseEntryView {
 
     public ItemEntry mItemEntry;
     public AppSelectWindow appSelectWindow;
-    public ShortcutEditWindow editWindow;
+    public ShortcutEdit editWindow;
     public PreferenceManager preferenceManager;
-    private ImageView shortcutImage;
     private TextView shortcutText;
+    private ImageView floatImage;
 
 
     public ShortcutView(Context context) {
@@ -33,8 +36,8 @@ public class ShortcutView extends BaseEntryView {
 
     public ShortcutView(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        LayoutInflater.from(context).inflate(R.layout.default_shortcut, this);
-        shortcutImage = (ImageView) findViewById(R.id.shortcut_image);
+        LayoutInflater.from(context).inflate(R.layout.default_shortcut, this);
+        floatImage = (ImageView) findViewById(R.id.shortcut_image);
         shortcutText = (TextView) findViewById(R.id.shortcut_text);
         preferenceManager = PreferenceManager.getInstance(LauncherApplication.getContext());
         String savedPackage = preferenceManager.getString((String) getTag());
@@ -47,57 +50,33 @@ public class ShortcutView extends BaseEntryView {
 
     @Override
     public void setDefault() {
-        // 设置默认的应用
-        String tag = (String) getTag();
-        String defaultPackage = null;
-        switch (tag) {
-            case "10":
-                defaultPackage = "com.android.settings";
-                break;
-            case "11":
-                defaultPackage = "com.dangbeimarket";
-                break;
-        }
-        if(defaultPackage != null) {
-            this.mItemEntry = new ItemEntry(defaultPackage);
-        }
+
     }
 
-    @Override
-    public void setBitmap() {
-        if(this.mItemEntry == null) {
-            Bitmap mBitmap = this.mBitmapTools.getDefaultShortcutBitmap(getContext(),
-                    R.layout.default_shortcut,
-                    getWidth(),
-                    getHeight(),
-                    R.drawable.default_background);
-            setImageBitmap(mBitmap);
-        } else {
-            Bitmap mBitmap = this.mBitmapTools.getShortcutBitmap(getContext(),
-                    R.layout.default_shortcut,
-                    R.id.shortcut_image,
-                    R.id.shortcut_text,
-                    ItemEntry.loadImage(getContext(), this.mItemEntry.getPackageName()),
-                    ItemEntry.loadLabel(getContext(), this.mItemEntry.getPackageName()),
-                    getWidth(),
-                    getHeight(),
-                    R.drawable.default_background);
-            setImageBitmap(mBitmap);
-        }
-    }
 
 
     @Override
     public void updateSelf() {
-        setBitmap();
-//        if (mItemEntry != null) {
-//            shortcutImage.setImageBitmap();
-//            shortcutText.setText(ItemEntry.loadLabel(getContext(), mItemEntry.getPackageName()));
-//        } else {
-//            // 加号
-//            shortcutImage.setImageBitmap(EntryImageGetter.getDefaultImage());
-//            shortcutText.setText(R.string.shortcut_default_title);
-//        }
+        if (mItemEntry != null) {
+            Bitmap bitmap = EntryImageGetter.getEntryImage(mItemEntry.getPackageName());
+            if(bitmap != null) {
+                floatImage.setImageBitmap(bitmap);
+            }
+            shortcutText.setText(ItemEntry.loadLabel(getContext(), mItemEntry.getPackageName()));
+        } else {
+            // 加号
+            floatImage.setImageBitmap(EntryImageGetter.getDefaultImage());
+            shortcutText.setText(R.string.shortcut_default_title);
+
+            ViewOutlineProvider provider = new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    int size = 30;
+                    outline.setOval(0, 0, view.getWidth(), view.getHeight());
+                }
+            };
+            floatImage.setOutlineProvider(provider);
+        }
     }
 
 
@@ -131,7 +110,7 @@ public class ShortcutView extends BaseEntryView {
 
     public void showEditWindow() {
         if(this.editWindow == null) {
-            editWindow = ShortcutEditWindow.getInstance(LauncherApplication.getContext());
+            editWindow = ShortcutEdit.getInstance(LauncherApplication.getContext());
         }
         this.editWindow.showEditWindow(this);
     }

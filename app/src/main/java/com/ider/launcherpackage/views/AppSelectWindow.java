@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.PopupWindow;
@@ -12,17 +13,28 @@ import com.ider.launcherpackage.launcher.AppAdapter;
 import com.ider.launcherpackage.launcher.ItemEntry;
 import com.ider.launcherpackage.R;
 import com.ider.launcherpackage.common.ApplicationUtil;
+import com.ider.launcherpackage.launcher.PackageHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class AppSelectWindow implements View.OnKeyListener, AdapterView.OnItemClickListener{
 
     private Context mContext;
-    private ArrayList<ItemEntry> allApps;
-    private ShortcutView baseView;
+    private List<PackageHolder> allApps;
+    private View baseView;
     private PopupWindow popWindow;
     private static AppSelectWindow INSTANCE;
+    private OnAppSelectListener onAppSelectListener;
+
+    public interface OnAppSelectListener{
+        void onAppSelected(PackageHolder holder);
+    }
+    public void setOnAppSelectListener(OnAppSelectListener onAppSelectListener) {
+        this.onAppSelectListener = onAppSelectListener;
+    }
+
 
     private AppSelectWindow(Context context) {
         this.mContext = context;
@@ -36,7 +48,7 @@ public class AppSelectWindow implements View.OnKeyListener, AdapterView.OnItemCl
     }
 
 
-    public void showAppPopWindow(ShortcutView baseView) {
+    public void showAppPopWindow(View baseView) {
         this.baseView = baseView;
         View view = View.inflate(mContext, R.layout.app_select_window, null);
         view.setOnKeyListener(this);
@@ -52,7 +64,7 @@ public class AppSelectWindow implements View.OnKeyListener, AdapterView.OnItemCl
     }
 
 
-    public void setupAppGrid(GridView gridView) {
+    private void setupAppGrid(GridView gridView) {
         allApps = ApplicationUtil.queryApplication(mContext);
         AppAdapter adapter = new AppAdapter(mContext, R.layout.app_select_item, allApps);
         gridView.setAdapter(adapter);
@@ -71,9 +83,16 @@ public class AppSelectWindow implements View.OnKeyListener, AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        baseView.mItemEntry = allApps.get(i);
-        baseView.updateSelf();
-        baseView.save();
+        if(baseView instanceof ShortcutView) {
+            ((ShortcutView) baseView).mItemEntry = new ItemEntry(allApps.get(i).getPackageName());
+            ((ShortcutView) baseView).updateSelf();
+            ((ShortcutView) baseView).save();
+        } else if(baseView instanceof GridView) {
+            if(onAppSelectListener != null) {
+                onAppSelectListener.onAppSelected(allApps.get(i));
+            }
+
+        }
         popWindow.dismiss();
     }
 }

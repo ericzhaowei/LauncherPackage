@@ -9,6 +9,12 @@ import android.graphics.drawable.Drawable;
 
 public class ItemEntry {
 
+    public static String PKG_KODI = "";
+    public static String PKG_YOUTUBE = "";
+    public static String PKG_GOOGLE_PLAY = "";
+    public static String PKG_MEDIA_CENTER = "";
+    public static String PKG_SETTING = "";
+
     private String packageName;
 
     public ItemEntry(String packageName) {

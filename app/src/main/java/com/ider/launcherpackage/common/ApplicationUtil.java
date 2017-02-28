@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import com.ider.launcherpackage.launcher.ItemEntry;
+import com.ider.launcherpackage.launcher.PackageHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ApplicationUtil {
 
-    public static ArrayList<ItemEntry> queryApplication(Context context) {
-        ArrayList<ItemEntry> enties = new ArrayList<>();
+    public static List<PackageHolder> queryApplication(Context context) {
+        List<PackageHolder> enties = new ArrayList<>();
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -20,8 +22,7 @@ public class ApplicationUtil {
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfos) {
             String packageName = resolveInfo.activityInfo.applicationInfo.packageName;
-            ItemEntry entry = new ItemEntry(packageName);
-            enties.add(entry);
+            enties.add(new PackageHolder(packageName, null));
         }
         return enties;
     }

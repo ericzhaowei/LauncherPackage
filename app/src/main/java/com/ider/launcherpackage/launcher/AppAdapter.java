@@ -1,6 +1,9 @@
 package com.ider.launcherpackage.launcher;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 import com.ider.launcherpackage.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ider-eric on 2016/12/26.
@@ -18,16 +22,18 @@ import java.util.ArrayList;
 
 public class AppAdapter extends BaseAdapter {
 
+    private static final String TAG = "AppAdapter";
+    
     private Context mContext;
     private int layoutId = R.layout.app_select_item;
-    private ArrayList<ItemEntry> data;
+    private List<PackageHolder> data;
 
-    public AppAdapter(Context mContext, ArrayList<ItemEntry> data) {
+    public AppAdapter(Context mContext, List<PackageHolder> data) {
         this.mContext = mContext;
         this.data = data;
     }
 
-    public AppAdapter(Context mContext, int layoutId, ArrayList<ItemEntry> data) {
+    public AppAdapter(Context mContext, int layoutId, List<PackageHolder> data) {
         this(mContext, data);
         this.layoutId = layoutId;
     }
@@ -59,14 +65,28 @@ public class AppAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        ItemEntry entry = data.get(i);
-        holder.image.setImageDrawable(ItemEntry.loadImage(mContext, entry.getPackageName()));
-        holder.text.setText(ItemEntry.loadLabel(mContext, entry.getPackageName()));
+        String pkgname = data.get(i).getPackageName();
+        holder.image.setImageDrawable(getPackageDrawable(pkgname));
+        holder.text.setText(getPackageText(pkgname));
 
         return view;
     }
 
+    private Drawable getPackageDrawable(String pkgname) {
+        if(pkgname.equals("add")) {
+            return mContext.getResources().getDrawable(R.mipmap.add_item_white);
+        } else {
+            return ItemEntry.loadImage(mContext, pkgname);
+        }
+    }
 
+    private String getPackageText(String pkgname) {
+        if(pkgname.equals("add")) {
+            return mContext.getResources().getString(R.string.shortcut_default_title);
+        } else {
+            return ItemEntry.loadLabel(mContext, pkgname);
+        }
+    }
 
     class ViewHolder {
         private ImageView image;
